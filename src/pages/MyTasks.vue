@@ -2,7 +2,7 @@
   <div class="flex justify-center">
     <div class="full-width q-pa-xl">
       <h6 class="q-my-none q-mb-md">My Tasks</h6>
-      <q-form>
+      <q-form ref="form" @submit="!selectedTodo ? addTodo() : updateTodo()">
         <div class="row gap">
           <q-input
             v-model="text"
@@ -15,41 +15,77 @@
           />
           <div class="col-2 q-pl-sm">
             <q-btn
-              class="bg-primary fit"
+              :class="`bg-${!selectedTodo ? 'primary' : 'secondary'} fit`"
               color="white"
               glossy
               dense
               flat
               type="submit"
-              icon="add"
+              :icon="!selectedTodo ? 'add' : 'edit'"
             />
           </div>
         </div>
       </q-form>
       <div class="q-mt-xl">
-        <q-card class="q-mt-sm">
+        <q-card
+          @click="selectTodo(row)"
+          class="q-mt-sm"
+          v-for="row in TodoList"
+          :key="row.id"
+        >
           <q-card-section
-            class="bg-primary text-white q-pa-none flex justify-between items-center"
-          >
-            <div class="text-bold q-pl-lg">Todo</div>
-            <div class="bg-white q-pa-sm">
-              <q-btn flat icon="check_circle_outline" color="green" />
-              <q-btn flat icon="delete_outline" color="red" />
-            </div>
-          </q-card-section>
-        </q-card>
-        <q-card class="q-mt-sm" v-for="row in MyTasks" :key="row.id">
-          <q-card-section
-            class="bg-primary text-white q-pa-none flex justify-between items-center"
+            :class="`bg-${
+              selectedTodo.id === row.id ? 'secondary' : 'primary'
+            } text-white q-pa-none flex justify-between items-center`"
           >
             <div class="text-bold q-pl-lg">{{ row.todo }}</div>
             <div class="bg-white q-pa-sm">
-              <q-btn flat icon="check_circle_outline" color="green" />
-              <q-btn flat icon="delete_outline" color="red" />
+              <q-btn
+                @click.stop="toggleDialog(row, 'mark-done')"
+                flat
+                icon="check_circle_outline"
+                color="green"
+              />
+              <q-btn
+                @click.stop="toggleDialog(row, 'delete')"
+                flat
+                icon="delete_outline"
+                color="red"
+              />
             </div>
           </q-card-section>
         </q-card>
       </div>
+      <!-- not sure -->
+      <q-dialog v-model="showDialog" persistent>
+        <q-card>
+          <q-card-section class="row items-center">
+            <div class="q-ml-sm">
+              Are you sure you want to mark
+              <span class="text-green">"{{ toMarkAsDone.todo }}"</span> as done?
+            </div>
+          </q-card-section>
+
+          <q-card-actions align="right">
+            <q-btn flat label="Cancel" color="primary" v-close-popup />
+            <q-btn
+              @click="toMarkAsDone ? markAsDone() : removeTodo()"
+              flat
+              label="Yes"
+              color="primary"
+              v-close-popup
+            />
+          </q-card-actions>
+        </q-card>
+        <div v-if="toMarkAsDone" class="q-ml-sm">
+          Are you sure you want to mark
+          <span class="text-green">"{{ toMarkAsDone.todo }}"</span> as done?
+        </div>
+        <div v-else class="q-ml-sm">
+          Are you sure you want to delete
+          <span class="text-green">"{{ toDelete.todo }}"</span>?
+        </div>
+      </q-dialog>
     </div>
   </div>
 </template>
@@ -99,4 +135,10 @@ const removeTodo = () => {
   toDelete.value = null;
   showDialog.value = false;
 };
+// addTodo();
+// selectTodo();
+// updateTodo();
+// toggleDialog();
+// markAsDone();
+// removeTodo();
 </script>
