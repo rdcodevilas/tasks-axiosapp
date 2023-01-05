@@ -1,3 +1,8 @@
+<script setup>
+import { ref } from "vue";
+import { DeletedTasks } from "../composables/Tasks";
+</script>
+
 <template>
   <div class="flex justify-center">
     <div class="full-width q-pa-xl">
@@ -12,10 +17,3 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref } from "vue";
-import { DeletedTasks } from "../composables/Tasks";
-
-let text = ref(null);
-</script>
