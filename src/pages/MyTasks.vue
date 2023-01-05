@@ -26,11 +26,6 @@ const updateTodo = () => {
 };
 
 let showDialog = ref(false);
-// const toggleDialog = (row, status) => {
-//   showDialog.value = true;
-//   toMarkAsDone.value = toDelete.value = null;
-//   status !== "delete" ? (toMarkAsDone.value = row) : (toDelete.value = row);
-// };
 const toggleDialog = (row, status) => {
   showDialog.value = true;
   toMarkAsDone.value = toDelete.value = null;
@@ -85,7 +80,6 @@ const removeTodo = () => {
         </div>
       </q-form>
       <div class="q-mt-xl">
-        <!-- separator -->
         <q-card
           @click="selectTodo(row)"
           class="q-mt-sm"
@@ -113,9 +107,6 @@ const removeTodo = () => {
           </q-card-section>
         </q-card>
       </div>
-
-      <!-- separator -->
-
       <q-dialog v-model="showDialog" persistent>
         <q-card>
           <q-card-section class="row items-center">
