@@ -26,10 +26,15 @@ const updateTodo = () => {
 };
 
 let showDialog = ref(false);
-const toggleDialog = (row) => {
+// const toggleDialog = (row, status) => {
+//   showDialog.value = true;
+//   toMarkAsDone.value = toDelete.value = null;
+//   status !== "delete" ? (toMarkAsDone.value = row) : (toDelete.value = row);
+// };
+const toggleDialog = (row, status) => {
   showDialog.value = true;
-  toMarkAsDone.value = null;
-  toMarkAsDone.value = row;
+  toMarkAsDone.value = toDelete.value = null;
+  status !== "delete" ? (toMarkAsDone.value = row) : (toDelete.value = row);
 };
 
 let toMarkAsDone = ref(null);
@@ -98,10 +103,8 @@ const removeTodo = () => {
                 icon="check_circle_outline"
                 color="green"
               />
-
-              <!-- change from toggle to remove -->
               <q-btn
-                @click.stop="removeTodo(row, 'delete')"
+                @click.stop="toggleDialog(row, 'delete')"
                 flat
                 icon="delete_outline"
                 color="red"
@@ -116,16 +119,20 @@ const removeTodo = () => {
       <q-dialog v-model="showDialog" persistent>
         <q-card>
           <q-card-section class="row items-center">
-            <div class="q-ml-sm">
+            <div v-if="toMarkAsDone" class="q-ml-sm">
               Are you sure you want to mark
               <span class="text-green">"{{ toMarkAsDone.todo }}"</span> as done?
+            </div>
+            <div v-else class="q-ml-sm">
+              Are you sure you want to delete
+              <span class="text-green">"{{ toDelete.todo }}"</span>?
             </div>
           </q-card-section>
 
           <q-card-actions align="right">
             <q-btn flat label="Cancel" color="primary" v-close-popup />
             <q-btn
-              @click="markAsDone()"
+              @click="toMarkAsDone ? markAsDone() : removeTodo()"
               flat
               label="Yes"
               color="primary"
