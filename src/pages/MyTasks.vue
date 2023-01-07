@@ -41,7 +41,7 @@ const markAsDone = () => {
   toMarkAsDone.value = null;
   showDialog.value = false;
 };
-//The removeTodo function starts by finding the index of the to-do item that is to be removed (stored in the toDelete variable) in the MyTasks array using the kfindIndex method. If the index is not equal to -1, the function removes the to-do item from the MyTasks array using the splice method. The to-do item is then added to the DeletedTasks array using the push method. The toDelete variable is set to null, and the value of the showDialog variable is set to false, which hides the dialog.
+//The removeTodo function starts by finding the index of the to-do item that is to be removed (stored in the toDelete variable) in the MyTasks array using the findIndex method. If the index is not equal to -1, the function removes the to-do item from the MyTasks array using the splice method. The to-do item is then added to the DeletedTasks array using the push method. The toDelete variable is set to null, and the value of the showDialog variable is set to false, which hides the dialog.
 let toDelete = ref(null);
 const removeTodo = () => {
   let index = MyTasks.value.findIndex((t) => t.id === toDelete.value.id);

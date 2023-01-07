@@ -39,6 +39,7 @@
 import { defineComponent, ref } from "vue";
 import EssentialLink from "components/EssentialLink.vue";
 
+//  linksList is an array of objects that contain information about links in a navigation menu. Each object in the array has the following properties title , caption , icon , route_name.
 const linksList = [
   {
     title: "My Tasks",
