@@ -105,11 +105,12 @@ const removeTodo = () => {
           class="q-mt-sm"
           v-for="row in MyTasks"
           :key="row.id"
+          alert
         >
           <q-card-section
             class="bg-primary text-white q-pa-none flex justify-between items-center"
           >
-            <div class="text-bold q-pl-lg">{{ row.todo }}</div>
+            <div class="text-bold q-pl-lg">{{ row.todo || row.title }}</div>
             <div class="bg-white q-pa-sm">
               <q-btn
                 @click.stop="toggleDialog(row, 'mark-done')"
@@ -126,7 +127,6 @@ const removeTodo = () => {
             </div>
           </q-card-section>
         </q-card>
-
         <!-- from axios  -->
         <q-card
           @click="selectTodo(row)"
@@ -155,21 +155,23 @@ const removeTodo = () => {
           </q-card-section>
         </q-card>
       </div>
-
       <q-dialog v-model="showDialog" persistent>
         <q-card>
           <!-- The q-card-section element represents a section of a card element, and the class attribute specifies a class for the card section element, his card section is being used to display a confirmation message when a user wants to mark a to-do item as done or delete it.  -->
           <q-card-section class="row items-center">
             <div v-if="toMarkAsDone" class="q-ml-sm">
               Are you sure you want to mark
-              <span class="text-green">"{{ toMarkAsDone.todo }}"</span> as done?
+              <span class="text-green"
+                >"{{ toMarkAsDone.todo || toMarkAsDone.title }}"</span
+              >
+              as done?
             </div>
             <div v-else class="q-ml-sm">
-              Are you sure you want to delete
-              <span class="text-red">"{{ toDelete.todo }}"</span>?
+              Are you sure you want to mark
+              <span class="text-red">"{{ toDelete.todo || toDelete.title }}"</span>
+              as delete?
             </div>
           </q-card-section>
-
           <!-- The q-btn element represents a button, and the flat attribute specifies that the button should have a flat style. The label attribute specifies the label for the button, and the color attribute specifies the color of the button text. The @click directive is a Vue.js event binding directive that binds the click event of the button element to a function. In this case, the function being called on click is either markAsDone or removeTodo, depending on the value of the toMarkAsDone variable. -->
           <q-card-actions align="right">
             <q-btn flat label="Cancel" color="primary" v-close-popup />
