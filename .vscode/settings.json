@@ -13,7 +13,9 @@
     "vue"
   ],
   "cSpell.words": [
-    "composables"
+    "axios",
+    "composables",
+    "todos"
   ],
   "vue3snippets.enable-compile-vue-file-on-did-save-code": true
 }

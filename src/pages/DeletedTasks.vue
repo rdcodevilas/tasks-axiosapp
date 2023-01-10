@@ -14,6 +14,7 @@ import { DeletedTasks } from "../composables/Tasks";
         <q-card v-for="row in DeletedTasks" :key="row.id" class="q-mt-sm">
           <q-card-section class="bg-primary text-white q-pa-none">
             <div class="text-bold q-pa-md">{{ row.todo }}</div>
+            <div class="text-bold q-pa-md">{{ row.title }}</div>
           </q-card-section>
         </q-card>
       </div>

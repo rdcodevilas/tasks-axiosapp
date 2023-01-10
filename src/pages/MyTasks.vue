@@ -1,17 +1,32 @@
+<!-- eslint-disable vue/no-parsing-error -->
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import axios from "axios";
 import { MyTasks, FinishedTasks, DeletedTasks } from "../composables/Tasks";
 
-let text = ref(null);
+const incompleteTodos = ref([]);
+const fetchIncompleteTodos = async () => {
+  try {
+    const response = await axios.get("https://jsonplaceholder.typicode.com/todos");
+    incompleteTodos.value = response.data.filter((item) => !item.completed);
+  } catch (error) {
+    console.error(error);
+  }
+};
+onMounted(() => {
+  fetchIncompleteTodos();
+});
 
+let text = ref(null);
 // addTodo function that adds an object to an array called MyTasks and resets a form element.
 let form = ref(null);
 const addTodo = () => {
   let id = MyTasks.value.length;
   MyTasks.value.push({ id: ++id, todo: text.value });
   text.value = null;
-  form.value.reset();
+  this.$refs.form.reset();
 };
+
 // The selectTodo function is likely called when a user selects a to-do item from a list, in order to update the form fields with the selected to-do's data.
 let selectedTodo = ref(null);
 const selectTodo = (row) => {
@@ -111,13 +126,39 @@ const removeTodo = () => {
             </div>
           </q-card-section>
         </q-card>
+
+        <!-- from axios  -->
+        <q-card
+          @click="selectTodo(row)"
+          class="q-mt-sm"
+          v-for="row in incompleteTodos"
+          :key="row.id"
+        >
+          <q-card-section
+            class="bg-primary text-white q-pa-none flex justify-between items-center"
+          >
+            <div class="text-bold q-pl-lg">{{ row.title }}</div>
+            <div class="bg-white q-pa-sm">
+              <q-btn
+                @click.stop="toggleDialog(row, 'mark-done')"
+                flat
+                icon="check_circle_outline"
+                color="green"
+              />
+              <q-btn
+                @click.stop="toggleDialog(row, 'delete')"
+                flat
+                icon="delete_outline"
+                color="red"
+              />
+            </div>
+          </q-card-section>
+        </q-card>
       </div>
+
       <q-dialog v-model="showDialog" persistent>
         <q-card>
-          <!-- The q-card-section element represents a section of a card element, and the class attribute specifies a class for the card section element, his card section is being used to display a confirmation message when a user
-wants to mark a to-do item as done or delete it. The message displayed depends
-on the action being taken, and the toMarkAsDone and toDelete variables store the
- -->
+          <!-- The q-card-section element represents a section of a card element, and the class attribute specifies a class for the card section element, his card section is being used to display a confirmation message when a user wants to mark a to-do item as done or delete it.  -->
           <q-card-section class="row items-center">
             <div v-if="toMarkAsDone" class="q-ml-sm">
               Are you sure you want to mark
@@ -125,14 +166,11 @@ on the action being taken, and the toMarkAsDone and toDelete variables store the
             </div>
             <div v-else class="q-ml-sm">
               Are you sure you want to delete
-              <span class="text-green">"{{ toDelete.todo }}"</span>?
+              <span class="text-red">"{{ toDelete.todo }}"</span>?
             </div>
           </q-card-section>
-          <!-- The q-btn element represents a button, and the flat attribute specifies that the button should have a flat style. The label attribute specifies the label for the button, and the color attribute specifies the color of the button text. The @click directive is a Vue.js event binding directive that binds the click
-event of the button element to a function. In this case, the function being
-called on click is either markAsDone or removeTodo, depending on the value of
-the toMarkAsDone variable. If toMarkAsDone is truthy, the markAsDone function is
-called. If toMarkAsDone is falsy, the removeTodo function is called. -->
+
+          <!-- The q-btn element represents a button, and the flat attribute specifies that the button should have a flat style. The label attribute specifies the label for the button, and the color attribute specifies the color of the button text. The @click directive is a Vue.js event binding directive that binds the click event of the button element to a function. In this case, the function being called on click is either markAsDone or removeTodo, depending on the value of the toMarkAsDone variable. -->
           <q-card-actions align="right">
             <q-btn flat label="Cancel" color="primary" v-close-popup />
             <q-btn

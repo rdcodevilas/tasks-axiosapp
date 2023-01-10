@@ -11,5 +11,5 @@ let DeletedTasks = ref([])
 export {
   MyTasks,
   FinishedTasks,
-  DeletedTasks
+  DeletedTasks,
 }
