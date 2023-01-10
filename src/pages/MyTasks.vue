@@ -70,7 +70,7 @@ const removeTodo = () => {
 <template>
   <div class="flex justify-center">
     <div class="full-width q-pa-xl">
-      <h6 class="q-my-none q-mb-md">My Tasks</h6>
+      <h6 class="q-my-none q-mb-md">Add Your Tasks</h6>
       <!-- The q-form element represents a form element, and the ref attribute is a Vue.js directive that binds the element to a reference in the Vue instance. -->
       <q-form ref="form" @submit="!selectedTodo ? addTodo() : updateTodo()">
         <!-- The q-input element represents an input field, and the v-model directive is a two-way data binding directive that binds the value of the input field to a variable in the Vue instance. In this case, the value of the input field is being bound to the text variable. -->
