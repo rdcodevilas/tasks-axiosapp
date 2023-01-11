@@ -4,6 +4,8 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { MyTasks, FinishedTasks, DeletedTasks } from "../composables/Tasks";
 
+let text = ref(null);
+
 const incompleteTodos = ref([]);
 const fetchIncompleteTodos = async () => {
   try {
@@ -16,27 +18,54 @@ const fetchIncompleteTodos = async () => {
 onMounted(() => {
   fetchIncompleteTodos();
 });
-
-let text = ref(null);
 // addTodo function that adds an object to an array called MyTasks and resets a form element.
-let form = ref(null);
 const addTodo = () => {
   let id = MyTasks.value.length;
   MyTasks.value.push({ id: ++id, todo: text.value });
+  // create a POST request using axios on https://jsonplaceholder.typicode.com/todos
+  axios({
+    method: "post",
+    url: "https://jsonplaceholder.typicode.com/todos",
+    data: {
+      title: text.value,
+      completed: false,
+    },
+  })
+    .then((response) => {
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   text.value = null;
   this.$refs.form.reset();
 };
-
 // The selectTodo function is likely called when a user selects a to-do item from a list, in order to update the form fields with the selected to-do's data.
 let selectedTodo = ref(null);
 const selectTodo = (row) => {
   selectedTodo.value = row;
   text.value = row.todo;
 };
-//The updateTodo function is likely called when a user submits an update to ato-do item in a form.
+//The updateTodo function is likely called when a user submits an update to a to-do item in a form.
+//Added the axios PUT request inside the updateTodo function, after updating the selected todo item in MyTasks array.
+//NOT WORKING
 const updateTodo = () => {
   let index = MyTasks.value.findIndex((t) => t.id === selectedTodo.value.id);
-  index !== -1 && (MyTasks.value[index].todo = text.value);
+  if (index !== -1) {
+    MyTasks.value[index].todo = text.value;
+
+    axios
+      .put("https://jsonplaceholder.typicode.com/todos/" + selectedTodo.value.id, {
+        title: text.value,
+        completed: false,
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   text.value = selectedTodo.value = null;
   form.value.reset();
 };
@@ -56,12 +85,23 @@ const markAsDone = () => {
   toMarkAsDone.value = null;
   showDialog.value = false;
 };
+//I've added the axios DELETE request inside the removeTodo function, after removing the selected todo item from MyTasks array and pushing it to DeletedTasks array.
 //The removeTodo function starts by finding the index of the to-do item that is to be removed (stored in the toDelete variable) in the MyTasks array using the findIndex method. If the index is not equal to -1, the function removes the to-do item from the MyTasks array using the splice method. The to-do item is then added to the DeletedTasks array using the push method. The toDelete variable is set to null, and the value of the showDialog variable is set to false, which hides the dialog.
 let toDelete = ref(null);
 const removeTodo = () => {
   let index = MyTasks.value.findIndex((t) => t.id === toDelete.value.id);
-  index !== -1 && MyTasks.value.splice(index, 1);
-  DeletedTasks.value.push(toDelete.value);
+  if (index !== -1) {
+    MyTasks.value.splice(index, 1);
+    DeletedTasks.value.push(toDelete.value);
+    axios
+      .delete("https://jsonplaceholder.typicode.com/todos/" + toDelete.value.id)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   toDelete.value = null;
   showDialog.value = false;
 };
